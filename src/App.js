@@ -23,7 +23,6 @@ function App() {
       setConverCurrency((Number(e.target.value) * currency.value).toFixed(2));
     }
   };
-
   useEffect(() => {
     async function fetchData() {
       try {
