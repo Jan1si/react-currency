@@ -55,6 +55,10 @@ code {
       cursor: pointer;
       font-size: 20px;
       font-weight: 500;
+      > a {
+        text-decoration: none;
+        color: #2c2c2c;
+      }
     }
   }
 }
@@ -155,6 +159,7 @@ code {
     width: 460px;
     > li {
       display: flex;
+      justify-content: space-between;
       padding: 10px 20px;
 
       &:hover {
@@ -162,11 +167,21 @@ code {
         color: white;
       }
 
+      .currency__text{
+        display: flex;
+      }
       .currency__code{
         font-size: 16px;
       }
       .currency__name{
         margin-left: 10px;
+      }
+      .currency__index{
+        display: flex;
+        align-items: center;
+        > img {
+          margin-left: 5px;
+        }
       }
     }
   }

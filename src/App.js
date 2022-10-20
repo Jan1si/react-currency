@@ -1,7 +1,10 @@
-import { FromInput } from './components/FromInput';
-import { ToInput } from './components/ToInput';
+import { Routes, Route } from 'react-router-dom';
 import { useEffect, useState, createContext } from 'react';
 import axios from 'axios';
+
+import { Header } from './components/Header';
+import { Main } from './pages/Main';
+import { Currency } from './pages/Currency';
 
 export const ValueContext = createContext({});
 
@@ -13,7 +16,12 @@ function App() {
 
   const changeValue = (e) => {
     setValueInput(e.target.value);
-    setConverCurrency((Number(e.target.value) * currency.value).toFixed(2));
+  };
+
+  const onKeyPress = (e) => {
+    if (e.code === 'Enter') {
+      setConverCurrency((Number(e.target.value) * currency.value).toFixed(2));
+    }
   };
 
   useEffect(() => {
@@ -24,10 +32,10 @@ function App() {
         setCurrencyData(Object.values(data.Valute));
         setCurrency({
           code: Object.values(data.Valute)[10]?.CharCode,
-          value: Object.values(data.Valute)[10]?.Value,
+          value: Object.values(data.Valute)[10]?.Value / Object.values(data.Valute)[10]?.Nominal,
         });
       } catch (error) {
-        console.log(error);
+        alert(error);
       }
     }
     fetchData();
@@ -36,36 +44,27 @@ function App() {
   return (
     <div className="wrapper">
       <div className="container">
-        <header className="header">
-          <div className="logo">
-            <h4>CURRENCY VALUE</h4>
-          </div>
-          <ul className="nav__menu">
-            <li className="nav__item">
-              <p className="nav__link">Конвертировать</p>
-            </li>
-            <li className="nav__item">
-              <p className="nav__link">Курс</p>
-            </li>
-          </ul>
-        </header>
-        <div className="content">
-          <div className="currency__block">
-            <ValueContext.Provider
-              value={{
-                valueInput,
-                converCurrency,
-              }}>
-              <FromInput
-                currency={currency}
-                setCurrency={setCurrency}
-                changeValue={(e) => changeValue(e)}
-                сurrencyData={currencyData}
-              />
-              <ToInput converCurrency={converCurrency} />
-            </ValueContext.Provider>
-          </div>
-        </div>
+        <Header />
+
+        <ValueContext.Provider
+          value={{
+            valueInput,
+            setValueInput,
+            converCurrency,
+            currency,
+            setCurrency,
+            currencyData,
+            setConverCurrency,
+          }}>
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={<Main changeValue={changeValue} onKeyPress={onKeyPress} />}
+            />
+            <Route exact path="/currency" element={<Currency />} />
+          </Routes>
+        </ValueContext.Provider>
       </div>
     </div>
   );
