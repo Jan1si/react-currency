@@ -22,8 +22,28 @@ export const Main = ({ onKeyPress, changeValue }) => {
   };
 
   const calcTest = () => {
-    const arr = currencyData.filter((item) => item.CharCode === textCurrency.fromCode);
-    console.log(arr[0].Value);
+     if (textCurrency.toCode === "RUB") {
+      if (textCurrency.fromCode === "RUB") {
+        console.log(textCurrency.value);
+      } else {
+        const arr = currencyData.filter((item) => item.CharCode === textCurrency.fromCode);
+        console.log((arr[0].Value * textCurrency.value).toFixed(2));
+      }
+     } else {
+      if (textCurrency.fromCode === "RUB") {
+        const arr = currencyData.filter((item) => item.CharCode === textCurrency.toCode);
+        console.log(textCurrency.value / arr[0].Value);
+       } else {
+        const arr = currencyData.filter((item) => item.CharCode === textCurrency.fromCode);
+        const arrTwo = currencyData.filter((item) => item.CharCode === textCurrency.toCode);
+        console.log((arr[0].Value * textCurrency.value).toFixed(2) / arrTwo[0].Value);
+       } 
+      
+     }
+
+     
+    ;
+    // console.log(arr[0].Value);
   };
 
   //------------------------------------------
