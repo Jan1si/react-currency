@@ -9,10 +9,10 @@ export const Header = () => {
       </div>
       <ul className="nav__menu">
         <li className="nav__item">
-          <Link to="/">Конвертировать</Link>
+          <Link to="/react-currency/">Конвертировать</Link>
         </li>
         <li className="nav__item">
-          <Link to="/currency">Курс</Link>
+          <Link to="/react-currency/currency">Курс</Link>
         </li>
       </ul>
     </header>

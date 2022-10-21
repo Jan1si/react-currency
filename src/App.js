@@ -72,10 +72,10 @@ function App() {
           <Routes>
             <Route
               exact
-              path="/"
+              path="/react-currency/"
               element={<Main changeValue={changeValue} onKeyPress={onKeyPress} />}
             />
-            <Route exact path="/currency" element={<Currency />} />
+            <Route exact path="/react-currency/currency" element={<Currency />} />
           </Routes>
         </ValueContext.Provider>
       </div>
