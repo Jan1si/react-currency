@@ -7,54 +7,63 @@ import { ToInput } from '../../components/ToInput';
 export const Main = ({ onKeyPress, changeValue }) => {
   const { converCurrency, currencyData } = useContext(ValueContext);
 
-  // TODO: Реализовать калькуляцию валюты
-  const [textCurrency, setTextCurrency] = useState({ value: 0, fromCode: '', toCode: '' });
-  const [textCalc, setTextCalc] = useState('');
-  const test = (e) => {
-    if (e.code === 'Enter') {
-      setTextCurrency({
-        value: Number(e.target.value.split(' ')[0]),
-        fromCode: e.target.value.split(' ')[1].toUpperCase(),
-        toCode: e.target.value.split(' ')[3].toUpperCase(),
-      });
-      calcTest();
+  const [inputText, setInputText] = useState('');
+
+  const calcFromText = (e) => {
+    const valueSplit = {
+      value: Number(e.target.value?.split(' ')[0]),
+      fromCode: e.target.value?.split(' ')[1].toUpperCase(),
+      toCode: e.target.value?.split(' ')[3].toUpperCase(),
+    };
+
+    if (valueSplit.toCode === 'RUB') {
+      if (valueSplit.fromCode === 'RUB') {
+        return setInputText(valueSplit.value);
+      } else {
+        const objFrom = currencyData.filter((item) => item.CharCode === valueSplit.fromCode);
+        return setInputText(
+          ((objFrom[0].Value / objFrom[0].Nominal) * valueSplit.value).toFixed(2),
+        );
+      }
+    } else {
+      if (valueSplit?.fromCode === 'RUB') {
+        const objTo = currencyData.filter((item) => item.CharCode === valueSplit.toCode);
+        return setInputText(valueSplit.value / (objTo[0].Value / objTo[0].Nominal).toFixed(2));
+      } else {
+        const objFrom = currencyData.filter((item) => item.CharCode === valueSplit.fromCode);
+        const objTo = currencyData.filter((item) => item.CharCode === valueSplit.toCode);
+        return setInputText(
+          (((objFrom[0].Value / objFrom[0].Nominal) * valueSplit.value) / objTo[0].Value).toFixed(
+            2,
+          ),
+        );
+      }
     }
   };
 
-  const calcTest = () => {
-     if (textCurrency.toCode === "RUB") {
-      if (textCurrency.fromCode === "RUB") {
-        console.log(textCurrency.value);
-      } else {
-        const arr = currencyData.filter((item) => item.CharCode === textCurrency.fromCode);
-        console.log((arr[0].Value * textCurrency.value).toFixed(2));
-      }
-     } else {
-      if (textCurrency.fromCode === "RUB") {
-        const arr = currencyData.filter((item) => item.CharCode === textCurrency.toCode);
-        console.log(textCurrency.value / arr[0].Value);
-       } else {
-        const arr = currencyData.filter((item) => item.CharCode === textCurrency.fromCode);
-        const arrTwo = currencyData.filter((item) => item.CharCode === textCurrency.toCode);
-        console.log((arr[0].Value * textCurrency.value).toFixed(2) / arrTwo[0].Value);
-       } 
-      
-     }
-
-     
-    ;
-    // console.log(arr[0].Value);
+  const test = (e) => {
+    if (e.code === 'Enter') {
+      calcFromText(e);
+    }
   };
-
-  //------------------------------------------
 
   return (
     <div className="content">
+      <h2 className="title">Конвертировать валюту</h2>
       <div className="currency__block">
         <FromInput changeValue={(e) => changeValue(e)} onKeyPress={(e) => onKeyPress(e)} />
         <ToInput converCurrency={converCurrency} />
       </div>
-      <input onKeyPress={(e) => test(e)} className="input__calc" type="text" />
+      <h3 className="sub__title">
+        Текстовый конвертатор <span>(пример. 10 usd in rub)</span>
+      </h3>
+      <input
+        onChange={(e) => setInputText(e.target.value)}
+        value={inputText}
+        onKeyPress={(e) => test(e)}
+        className="input__calc"
+        type="text"
+      />
     </div>
   );
 };

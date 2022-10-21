@@ -1,43 +1,65 @@
 import React from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { ValueContext } from '../../App';
 
 export const Currency = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  console.log(isOpen);
+  const { currencyData, indexUsd, indexEur, indexDefault, setIndexDefault } =
+    useContext(ValueContext);
+
   return (
     <div className="content">
+      <h2 className="title">Курсы валют</h2>
       <div className="currency__block">
-        <div className="dropdown__currency">
-          <div onClick={() => setIsOpen((prev) => !prev)} className="current__select">
-            <span>1</span>
+        <ul className="list__currency">
+          <li
+            className={`${indexDefault[0]?.CharCode === 'RUB' ? '_active' : null}`}
+            onClick={() => setIndexDefault([])}
+            key={'RUB'}>
+            <div className="currency__text">
+              <p className="currency__code">RUB</p>
+              <p className="currency__name">Российский рубль</p>
+            </div>
+          </li>
+          {currencyData.map((item) => (
+            <li
+              className={`${indexDefault[0]?.CharCode === item?.CharCode ? '_active' : null}`}
+              onClick={() => setIndexDefault([item])}
+              key={item.CharCode}>
+              <div className="currency__text">
+                <p className="currency__code">{item.CharCode}</p>
+                <p className="currency__name">{item.Name}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="index__currency">
+          <div className="index__item">
+            <h1>
+              {indexDefault.length === 0
+                ? indexUsd.toFixed(2)
+                : (indexDefault[0]?.Value / indexDefault[0]?.Nominal / indexUsd).toFixed(4)}{' '}
+              USD
+            </h1>
             <img
-              className={`${isOpen ? 'arrow_active' : null}`}
-              src="./img/arrow.svg"
-              alt="arrow"
+              src={`${
+                indexUsd && indexUsd > indexUsd.Previous ? './img/up.svg' : './img/down.svg'
+              }`}
+              alt=""
             />
           </div>
-          <div className={`dropdown__menu menu__from`}>
-            <ul>
-              <li>
-                <div className="currency__text">
-                  <p className="currency__code">1</p>
-                  <p className="currency__name">1</p>
-                </div>
-                <div className="currency__index">
-                  <p className="price">1</p>
-                  {/* <img
-                    width={10}
-                    height={10}
-                    src={`${
-                      item.Value / item.Nominal > item.Previous / item.Nominal
-                        ? './img/up.svg'
-                        : './img/down.svg'
-                    }`}
-                    alt="up or down"
-                  /> */}
-                </div>
-              </li>
-            </ul>
+          <div className="index__item">
+            <h1>
+              {indexDefault.length === 0
+                ? indexEur.toFixed(2)
+                : (indexDefault[0]?.Value / indexDefault[0]?.Nominal / indexEur).toFixed(4)}{' '}
+              EUR
+            </h1>
+            <img
+              src={`${
+                indexEur && indexEur > indexEur.Previous ? './img/up.svg' : './img/down.svg'
+              }`}
+              alt=""
+            />
           </div>
         </div>
       </div>

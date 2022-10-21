@@ -13,16 +13,11 @@ function App() {
   const [currency, setCurrency] = useState({});
   const [valueInput, setValueInput] = useState(0);
   const [converCurrency, setConverCurrency] = useState(0);
+  const [defaulCurrency, setDefaultCurrentcy] = useState('AM');
+  const [indexDefault, setIndexDefault] = useState([]);
+  const [indexUsd, setIndexUsd] = useState(0);
+  const [indexEur, setIndexEur] = useState(0);
 
-  const changeValue = (e) => {
-    setValueInput(e.target.value);
-  };
-
-  const onKeyPress = (e) => {
-    if (e.code === 'Enter') {
-      setConverCurrency((Number(e.target.value) * currency.value).toFixed(2));
-    }
-  };
   useEffect(() => {
     async function fetchData() {
       try {
@@ -33,12 +28,27 @@ function App() {
           code: Object.values(data.Valute)[10]?.CharCode,
           value: Object.values(data.Valute)[10]?.Value / Object.values(data.Valute)[10]?.Nominal,
         });
+        setIndexEur(Object.values(data.Valute).filter((item) => item.CharCode === 'EUR')[0].Value);
+        setIndexUsd(Object.values(data.Valute).filter((item) => item.CharCode === 'USD')[0].Value);
+        setIndexDefault(
+          Object.values(data.Valute).filter((item) => item.CharCode.includes(defaulCurrency)),
+        );
       } catch (error) {
         alert(error);
       }
     }
     fetchData();
   }, []);
+
+  const changeValue = (e) => {
+    setValueInput(e.target.value);
+  };
+
+  const onKeyPress = (e) => {
+    if (e.code === 'Enter') {
+      setConverCurrency((Number(e.target.value) * currency.value).toFixed(2));
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -54,6 +64,10 @@ function App() {
             setCurrency,
             currencyData,
             setConverCurrency,
+            indexUsd,
+            indexEur,
+            indexDefault,
+            setIndexDefault,
           }}>
           <Routes>
             <Route

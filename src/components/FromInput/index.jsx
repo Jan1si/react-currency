@@ -20,6 +20,7 @@ export const FromInput = ({ changeValue, onKeyPress }) => {
           <ul>
             {currencyData.map((item) => (
               <li
+                className={`${currency.code === item.CharCode ? '_active' : null}`}
                 onClick={() => {
                   setValueInput(0);
                   setConverCurrency(0);
